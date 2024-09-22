@@ -38,7 +38,7 @@ public class InventoryUI : MonoBehaviour
 
                 itemsUI.Add(tmp_item);
 
-                tmp_item.Initialize();
+                //tmp_item.Initialize();
             }
         }
     }

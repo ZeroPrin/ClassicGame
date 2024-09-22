@@ -45,19 +45,18 @@ public class PlayerController : MonoBehaviour
         playerInput.Main.Interact.performed += context => Interact();
         playerInput.Main.Use.performed += context => Master.HandController.Use();
         playerInput.Main.Drop.performed += context => Master.HandController.Drop();
+        playerInput.Main.Next.performed += context => Master.Inventory.SwitchNext();
+        playerInput.Main.Previous.performed += context => Master.Inventory.SwitchPrevious();
 
         yaw = transform.eulerAngles.y;
         pitch = cameraTransform.localEulerAngles.x;
 
         playerStats.onStatsChanged += SetStats;
-    }
 
-    private void OnEnable()
-    {
         playerInput.Enable();
     }
 
-    private void OnDisable()
+    public void Deinitialize() 
     {
         playerInput.Disable();
     }

@@ -20,6 +20,10 @@ public class Inventory : MonoBehaviour
 
     InventoryObject[] inventoryObjects;
     int[] objectsCount;
+    InventoryObject currentObject = null;
+    int currentIndex = -1;
+
+
 
     [Header ("Actions")]
     public Action onInventoryUpdated;
@@ -33,6 +37,9 @@ public class Inventory : MonoBehaviour
         {
             objectsCount[i] = 0;
         }
+
+        currentObject = null;
+        currentIndex = -1;
 
         Master.HandController.onItemDeleted += RemoveFromList;
 
@@ -105,6 +112,84 @@ public class Inventory : MonoBehaviour
 
         onInventoryUpdated?.Invoke();
     }
+    #endregion
+
+    #region Switch Items
+
+    public void SwitchNext() 
+    {
+        for (int i = currentIndex + 1; i < inventoryObjects.Length; i++)
+        {
+            if (inventoryObjects[i] != null)
+            {
+                currentIndex = i;
+                currentObject = inventoryObjects[i];
+
+                Master.HandController.SetObject(inventoryObjects[i].Prefab, i);
+
+                return;
+            }
+        }
+
+        SafeSearch();
+    }
+
+    public void SafeSearch()
+    {
+        for (int i = 0; i < inventoryObjects.Length; i++)
+        {
+            if (inventoryObjects[i] != null)
+            {
+                currentIndex = i;
+                currentObject = inventoryObjects[i];
+
+                Master.HandController.SetObject(inventoryObjects[i].Prefab, i);
+
+                return;
+            }
+        }
+
+        currentIndex = -1;
+        currentObject = null;
+    }
+
+    public void SwitchPrevious() 
+    {
+        for (int i = currentIndex - 1; i >= 0; i--)
+        {
+            if (inventoryObjects[i] != null)
+            {
+                currentIndex = i;
+                currentObject = inventoryObjects[i];
+
+                Master.HandController.SetObject(inventoryObjects[i].Prefab, i);
+
+                return;
+            }
+        }
+
+        SafeSearchInvert();
+    }
+
+    public void SafeSearchInvert()
+    {
+        for (int i = inventoryObjects.Length - 1; i >= 0; i--)
+        {
+            if (inventoryObjects[i] != null)
+            {
+                currentIndex = i;
+                currentObject = inventoryObjects[i];
+
+                Master.HandController.SetObject(inventoryObjects[i].Prefab, i);
+
+                return;
+            }
+        }
+
+        currentIndex = -1;
+        currentObject = null;
+    }
+
     #endregion
 
     #region Save/Load

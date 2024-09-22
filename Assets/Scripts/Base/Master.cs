@@ -48,6 +48,8 @@ public class Master : MonoBehaviour
 
     public void DeinitializeAll() 
     {
+        PlayerController.Deinitialize();
         Inventory.Deinitialize();
+        
     }
 }

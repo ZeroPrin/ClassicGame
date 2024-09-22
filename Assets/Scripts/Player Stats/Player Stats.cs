@@ -119,6 +119,10 @@ public class PlayerStats : MonoBehaviour
         while (elapsedTime < duration)
         {
             HP -= damagePerSecond;
+
+            if (HP < 0)
+                HP = 0;
+
             onStatsChanged?.Invoke();
             yield return new WaitForSeconds(1f);
             elapsedTime += 1f;

@@ -11,21 +11,21 @@ public class ItemUI : MonoBehaviour
     public Image Icon;
     public TextMeshProUGUI Count;
     public TextMeshProUGUI Name;
-    [SerializeField]
-    Button button;
+    //[SerializeField]
+    //Button button;
 
     [Header ("Object")]
     public GameObject Prefab;
     public int Index;
 
-    public void Initialize() 
-    {
-        button.onClick.AddListener(onButtonClicked);
-    }
+    //public void Initialize() 
+    //{
+    //    button.onClick.AddListener(onButtonClicked);
+    //}
 
-    public void onButtonClicked() 
-    {
-        Master.HandController.SetObject(Prefab, Index);
-        Debug.Log("Obj in hand");
-    }
+    //public void onButtonClicked() 
+    //{
+    //    Master.HandController.SetObject(Prefab, Index);
+    //    Debug.Log("Obj in hand");
+    //}
 }
