@@ -34,22 +34,25 @@ public class PlayerController : MonoBehaviour
     private float yawVelocity = 0f;
     private float pitchVelocity = 0f;
 
-    private void Awake()
+    public void Initialize()
     {
         playerInput = new PlayerInput();
 
         playerInput.Main.Jump.performed += context => Jump();
+        playerInput.Main.Interact.performed += context => Interact();
+        playerInput.Main.Use.performed += context => Master.HandController.Use();
+        playerInput.Main.Drop.performed += context => Master.HandController.Drop();
 
         yaw = transform.eulerAngles.y;
         pitch = cameraTransform.localEulerAngles.x;
     }
 
-    public void OnEnable()
+    private void OnEnable()
     {
         playerInput.Enable();
     }
 
-    public void OnDisable()
+    private void OnDisable()
     {
         playerInput.Disable();
     }
@@ -59,6 +62,7 @@ public class PlayerController : MonoBehaviour
         Move();
         CheckGround();
         Rotate();
+        GetInfo();
     }
 
     public void Move()
@@ -116,11 +120,31 @@ public class PlayerController : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, interactionDistance))
         {
-            //Interactable interactable = hit.collider.GetComponent<Interactable>();
-            //if (interactable != null)
-            //{
-            //    interactable.Interact();
-            //}
+            InteractiveObject interactable = hit.collider.GetComponent<InteractiveObject>();
+            if (interactable != null)
+            {
+                if (interactable is Item) 
+                {
+                    Master.Inventory.AddItem(interactable.GetComponent<Item>());
+                }
+
+                interactable.Interact();
+            }
+        }
+    }
+
+    public void GetInfo()
+    {
+        Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, interactionDistance))
+        {
+            InteractiveObject interactable = hit.collider.GetComponent<InteractiveObject>();
+            if (interactable != null)
+            {
+                interactable.GetInfo();
+            }
         }
     }
 }

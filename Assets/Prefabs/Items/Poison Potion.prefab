@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2588370931190488413}
   - component: {fileID: 598623246323747302}
   - component: {fileID: 8520167632294325138}
+  - component: {fileID: 18514206292451521}
   m_Layer: 0
   m_Name: Poison Potion
   m_TagString: Untagged
@@ -135,3 +136,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &18514206292451521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 251274122910388385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 744a72a9b504f544cbad486d74bb6e2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InventoryObject: {fileID: 11400000, guid: bc5328f6e49d9574b8c2a19a8d9e4927, type: 2}
