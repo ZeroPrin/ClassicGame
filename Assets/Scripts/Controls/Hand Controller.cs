@@ -24,7 +24,7 @@ public class HandController : MonoBehaviour
     private GameObject lastPrefab;
     private int lastIndex;
 
-    //Actions
+    [Header ("Actions")]
     public Action<int> onItemDeleted;
 
     public void SetObject(GameObject prefab, int ind) 

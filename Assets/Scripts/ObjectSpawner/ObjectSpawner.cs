@@ -37,6 +37,9 @@ public class ObjectSpawner : MonoBehaviour
 
     void SpawnObject()
     {
-        Instantiate(objectToSpawn, spawnPoint.position, Quaternion.identity);
+        GameObject newObj = Instantiate(objectToSpawn, spawnPoint.position, Quaternion.identity);
+
+        if (newObj.GetComponent<Item>())
+            newObj.GetComponent<Item>().PermanentRotation.rotationActive = true;
     }
 }

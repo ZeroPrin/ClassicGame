@@ -14,10 +14,14 @@ public class Inventory : MonoBehaviour
     [SerializeField]
     int slotCapacity = 5;
 
+    [Header("Inventory Data")]
+    [SerializeField]
+    private InventoryData savedInventoryData;
+
     InventoryObject[] inventoryObjects;
     int[] objectsCount;
 
-    //Actions
+    [Header ("Actions")]
     public Action onInventoryUpdated;
 
     public void Initialize()
@@ -31,8 +35,16 @@ public class Inventory : MonoBehaviour
         }
 
         Master.HandController.onItemDeleted += RemoveFromList;
+
+        LoadInventory();
     }
 
+    public void Deinitialize() 
+    {
+        SaveInventory();
+    }
+
+    #region Add/Remove Item
     public void AddItem(Item item)
     {
         InventoryObject inventoryObject = item.InventoryObject;
@@ -46,7 +58,7 @@ public class Inventory : MonoBehaviour
 
     private bool AddToList(InventoryObject item) 
     {
-        for (int i = 0; i < inventoryObjects.Length; i++) 
+        for (int i = 0; i < inventoryObjects.Length; i++)
         {
             if (inventoryObjects[i] != null)
             {
@@ -57,7 +69,11 @@ public class Inventory : MonoBehaviour
                     return true;
                 }
             }
-            else
+        }
+
+        for (int i = 0; i < inventoryObjects.Length; i++)
+        {
+            if (inventoryObjects[i] == null)
             {
                 inventoryObjects[i] = item;
                 objectsCount[i]++;
@@ -89,4 +105,42 @@ public class Inventory : MonoBehaviour
 
         onInventoryUpdated?.Invoke();
     }
+    #endregion
+
+    #region Save/Load
+    public void SaveInventory()
+    {
+        if (savedInventoryData != null)
+        {
+            savedInventoryData.inventoryObjects.Clear();
+            savedInventoryData.objectsCount.Clear();
+
+            for (int i = 0; i < inventoryObjects.Length; i++)
+            {
+                if (inventoryObjects[i] != null)
+                {
+                    savedInventoryData.inventoryObjects.Add(inventoryObjects[i]);
+                    savedInventoryData.objectsCount.Add(objectsCount[i]);
+                }
+            }
+
+            Debug.Log("Inventory saved successfully.");
+        }
+    }
+
+    public void LoadInventory()
+    {
+        if (savedInventoryData != null)
+        {
+            for (int i = 0; i < savedInventoryData.inventoryObjects.Count; i++)
+            {
+                inventoryObjects[i] = savedInventoryData.inventoryObjects[i];
+                objectsCount[i] = savedInventoryData.objectsCount[i];
+            }
+
+            onInventoryUpdated?.Invoke();
+            Debug.Log("Inventory loaded successfully.");
+        }
+    }
+    #endregion
 }

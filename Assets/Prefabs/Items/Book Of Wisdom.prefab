@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 9218583378861317585}
   - component: {fileID: 2508509314738971321}
   - component: {fileID: 2720251722014247458}
+  - component: {fileID: 4215051300121614221}
   m_Layer: 0
   m_Name: Book Of Wisdom
   m_TagString: Untagged
@@ -30,8 +31,8 @@ Transform:
   m_GameObject: {fileID: 4349568156284616709}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.26, y: 1.546, z: 7.16}
-  m_LocalScale: {x: 0.5, y: 0.1797, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.37835, y: 0.5465935, z: 0.1737}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -134,7 +135,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 10
   m_CollisionDetection: 0
 --- !u!114 &2720251722014247458
 MonoBehaviour:
@@ -148,4 +149,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f2de815ecaf2ac40b1262ad973caa6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PermanentRotation: {fileID: 4215051300121614221}
   InventoryObject: {fileID: 11400000, guid: 2e9e072440c44f1408ebd75f262d43b8, type: 2}
+--- !u!114 &4215051300121614221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4349568156284616709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90474b121efce54459ca073ee38493fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationActive: 0
+  rotationSpeed: 1

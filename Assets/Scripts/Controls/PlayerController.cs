@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviour
     private Transform cameraTransform;
     [SerializeField]
     private Transform rayOriginTransform;
+    [SerializeField]
+    private PlayerStats playerStats;
+
     private PlayerInput playerInput;
 
     [Header("Parameters")]
@@ -45,6 +48,8 @@ public class PlayerController : MonoBehaviour
 
         yaw = transform.eulerAngles.y;
         pitch = cameraTransform.localEulerAngles.x;
+
+        playerStats.onStatsChanged += SetStats;
     }
 
     private void OnEnable()
@@ -146,5 +151,11 @@ public class PlayerController : MonoBehaviour
                 interactable.GetInfo();
             }
         }
+    }
+
+    public void SetStats() 
+    {
+        moveSpeed = playerStats.Speed;
+        jumpForce = playerStats.Strength;
     }
 }

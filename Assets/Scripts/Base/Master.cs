@@ -8,12 +8,18 @@ public class Master : MonoBehaviour
 
     public static PlayerController PlayerController => instance._playerController;
     public static HandController HandController => instance._handController;
+    public static PlayerStats PlayerStats => instance._playerStats;
+    public static PlayerStatsUI PlayerStatsUI => instance._playerStatsUI;
     public static Inventory Inventory => instance._inventory;
     public static InventoryUI InventoryUI => instance._inventoryUI;
 
     [Header("Player")]
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private HandController _handController;
+
+    [Header("Player Stats")]
+    [SerializeField] private PlayerStats _playerStats;
+    [SerializeField] private PlayerStatsUI _playerStatsUI;
 
     [Header("Inventory")]
     [SerializeField] private Inventory _inventory;
@@ -26,10 +32,22 @@ public class Master : MonoBehaviour
         InitializeAll();
     }
 
+    private void OnDestroy()
+    {
+        DeinitializeAll();
+    }
+
     public void InitializeAll() 
     {
         PlayerController.Initialize();
-        Inventory.Initialize();
         InventoryUI.Initialize();
+        Inventory.Initialize();
+        PlayerStatsUI.Initialize();
+        PlayerStats.Initialize();
+    }
+
+    public void DeinitializeAll() 
+    {
+        Inventory.Deinitialize();
     }
 }

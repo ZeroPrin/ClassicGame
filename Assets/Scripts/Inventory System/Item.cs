@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Item : InteractiveObject, IInteractable, IItem
 {
+    public PermanentRotation PermanentRotation;
     public InventoryObject InventoryObject;
     public override void GetInfo()
     {
-        Debug.Log("Item");
+        //Debug.Log("Item");
     }
 
     public override void Interact()
@@ -15,9 +16,9 @@ public class Item : InteractiveObject, IInteractable, IItem
         Debug.Log("Interact");
     }
 
-    public void Use()
+    public virtual void Use()
     {
-        Debug.Log("Use");
+        Debug.Log("Used");
         Destroy(gameObject);
     }
 }
