@@ -2,46 +2,49 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class Inventory : MonoBehaviour
 {
-    public InventoryObject[] InventoryObjects => inventoryObjects;
-    public int[] ObjectsCount => objectsCount;
+    public InventoryObject[] InventoryObjects => _inventoryObjects;
+    public int[] ObjectsCount => _objectsCount;
 
     [Header ("Inventory Capacity")]
-    [SerializeField]
-    int inventoryCapacity = 5;
-    [SerializeField]
-    int slotCapacity = 5;
+    [SerializeField] int _inventoryCapacity = 5;
+    [SerializeField] int _slotCapacity = 5;
 
     [Header("Inventory Data")]
-    [SerializeField]
-    private InventoryData savedInventoryData;
+    [SerializeField] private InventoryData _savedInventoryData;
 
-    InventoryObject[] inventoryObjects;
-    int[] objectsCount;
-    InventoryObject currentObject = null;
-    int currentIndex = -1;
+    private InventoryObject[] _inventoryObjects;
+    private int[] _objectsCount;
+    private InventoryObject _currentObject = null;
+    private int _currentIndex = -1;
 
-
+    private HandController _handController;
 
     [Header ("Actions")]
-    public Action onInventoryUpdated;
+    public Action OnInventoryUpdated;
 
+    [Inject]
+    public void Construct(HandController handController) 
+    {
+        _handController = handController;
+    }
     public void Initialize()
     {
-        inventoryObjects  = new InventoryObject[inventoryCapacity];
-        objectsCount = new int[inventoryCapacity];
+        _inventoryObjects  = new InventoryObject[_inventoryCapacity];
+        _objectsCount = new int[_inventoryCapacity];
 
-        for (int i = 0; i < objectsCount.Length; i++)
+        for (int i = 0; i < _objectsCount.Length; i++)
         {
-            objectsCount[i] = 0;
+            _objectsCount[i] = 0;
         }
 
-        currentObject = null;
-        currentIndex = -1;
+        _currentObject = null;
+        _currentIndex = -1;
 
-        Master.HandController.onItemDeleted += RemoveFromList;
+        _handController.OnItemDeleted += RemoveFromList;
 
         LoadInventory();
     }
@@ -59,31 +62,31 @@ public class Inventory : MonoBehaviour
         if (AddToList(inventoryObject)) 
         {
             Destroy(item.gameObject);
-            onInventoryUpdated?.Invoke();
+            OnInventoryUpdated?.Invoke();
         }
     }
 
     private bool AddToList(InventoryObject item) 
     {
-        for (int i = 0; i < inventoryObjects.Length; i++)
+        for (int i = 0; i < _inventoryObjects.Length; i++)
         {
-            if (inventoryObjects[i] != null)
+            if (_inventoryObjects[i] != null)
             {
-                if (inventoryObjects[i].Name == item.Name && objectsCount[i] < slotCapacity)
+                if (_inventoryObjects[i].Name == item.Name && _objectsCount[i] < _slotCapacity)
                 {
-                    objectsCount[i]++;
+                    _objectsCount[i]++;
 
                     return true;
                 }
             }
         }
 
-        for (int i = 0; i < inventoryObjects.Length; i++)
+        for (int i = 0; i < _inventoryObjects.Length; i++)
         {
-            if (inventoryObjects[i] == null)
+            if (_inventoryObjects[i] == null)
             {
-                inventoryObjects[i] = item;
-                objectsCount[i]++;
+                _inventoryObjects[i] = item;
+                _objectsCount[i]++;
 
                 return true;
             }
@@ -94,23 +97,23 @@ public class Inventory : MonoBehaviour
 
     private void RemoveFromList(int index) 
     {
-        if (objectsCount[index] > 1)
+        if (_objectsCount[index] > 1)
         {
-            objectsCount[index] -= 1;
+            _objectsCount[index] -= 1;
 
         }
-        else if (objectsCount[index] == 1)
+        else if (_objectsCount[index] == 1)
         {
-            objectsCount[index] = 0;
-            inventoryObjects[index] = null;
-            Master.HandController.Clear();
+            _objectsCount[index] = 0;
+            _inventoryObjects[index] = null;
+            _handController.Clear();
         }
         else 
         {
             Debug.LogError("List is empty, but you trying to acces it");
         }
 
-        onInventoryUpdated?.Invoke();
+        OnInventoryUpdated?.Invoke();
     }
     #endregion
 
@@ -118,14 +121,14 @@ public class Inventory : MonoBehaviour
 
     public void SwitchNext() 
     {
-        for (int i = currentIndex + 1; i < inventoryObjects.Length; i++)
+        for (int i = _currentIndex + 1; i < _inventoryObjects.Length; i++)
         {
-            if (inventoryObjects[i] != null)
+            if (_inventoryObjects[i] != null)
             {
-                currentIndex = i;
-                currentObject = inventoryObjects[i];
+                _currentIndex = i;
+                _currentObject = _inventoryObjects[i];
 
-                Master.HandController.SetObject(inventoryObjects[i].Prefab, i);
+                _handController.SetObject(_inventoryObjects[i].Prefab, i);
 
                 return;
             }
@@ -136,33 +139,33 @@ public class Inventory : MonoBehaviour
 
     public void SafeSearch()
     {
-        for (int i = 0; i < inventoryObjects.Length; i++)
+        for (int i = 0; i < _inventoryObjects.Length; i++)
         {
-            if (inventoryObjects[i] != null)
+            if (_inventoryObjects[i] != null)
             {
-                currentIndex = i;
-                currentObject = inventoryObjects[i];
+                _currentIndex = i;
+                _currentObject = _inventoryObjects[i];
 
-                Master.HandController.SetObject(inventoryObjects[i].Prefab, i);
+                _handController.SetObject(_inventoryObjects[i].Prefab, i);
 
                 return;
             }
         }
 
-        currentIndex = -1;
-        currentObject = null;
+        _currentIndex = -1;
+        _currentObject = null;
     }
 
     public void SwitchPrevious() 
     {
-        for (int i = currentIndex - 1; i >= 0; i--)
+        for (int i = _currentIndex - 1; i >= 0; i--)
         {
-            if (inventoryObjects[i] != null)
+            if (_inventoryObjects[i] != null)
             {
-                currentIndex = i;
-                currentObject = inventoryObjects[i];
+                _currentIndex = i;
+                _currentObject = _inventoryObjects[i];
 
-                Master.HandController.SetObject(inventoryObjects[i].Prefab, i);
+                _handController.SetObject(_inventoryObjects[i].Prefab, i);
 
                 return;
             }
@@ -173,21 +176,21 @@ public class Inventory : MonoBehaviour
 
     public void SafeSearchInvert()
     {
-        for (int i = inventoryObjects.Length - 1; i >= 0; i--)
+        for (int i = _inventoryObjects.Length - 1; i >= 0; i--)
         {
-            if (inventoryObjects[i] != null)
+            if (_inventoryObjects[i] != null)
             {
-                currentIndex = i;
-                currentObject = inventoryObjects[i];
+                _currentIndex = i;
+                _currentObject = _inventoryObjects[i];
 
-                Master.HandController.SetObject(inventoryObjects[i].Prefab, i);
+                _handController.SetObject(_inventoryObjects[i].Prefab, i);
 
                 return;
             }
         }
 
-        currentIndex = -1;
-        currentObject = null;
+        _currentIndex = -1;
+        _currentObject = null;
     }
 
     #endregion
@@ -195,17 +198,17 @@ public class Inventory : MonoBehaviour
     #region Save/Load
     public void SaveInventory()
     {
-        if (savedInventoryData != null)
+        if (_savedInventoryData != null)
         {
-            savedInventoryData.inventoryObjects.Clear();
-            savedInventoryData.objectsCount.Clear();
+            _savedInventoryData.inventoryObjects.Clear();
+            _savedInventoryData.objectsCount.Clear();
 
-            for (int i = 0; i < inventoryObjects.Length; i++)
+            for (int i = 0; i < _inventoryObjects.Length; i++)
             {
-                if (inventoryObjects[i] != null)
+                if (_inventoryObjects[i] != null)
                 {
-                    savedInventoryData.inventoryObjects.Add(inventoryObjects[i]);
-                    savedInventoryData.objectsCount.Add(objectsCount[i]);
+                    _savedInventoryData.inventoryObjects.Add(_inventoryObjects[i]);
+                    _savedInventoryData.objectsCount.Add(_objectsCount[i]);
                 }
             }
 
@@ -215,15 +218,15 @@ public class Inventory : MonoBehaviour
 
     public void LoadInventory()
     {
-        if (savedInventoryData != null)
+        if (_savedInventoryData != null)
         {
-            for (int i = 0; i < savedInventoryData.inventoryObjects.Count; i++)
+            for (int i = 0; i < _savedInventoryData.inventoryObjects.Count; i++)
             {
-                inventoryObjects[i] = savedInventoryData.inventoryObjects[i];
-                objectsCount[i] = savedInventoryData.objectsCount[i];
+                _inventoryObjects[i] = _savedInventoryData.inventoryObjects[i];
+                _objectsCount[i] = _savedInventoryData.objectsCount[i];
             }
 
-            onInventoryUpdated?.Invoke();
+            OnInventoryUpdated?.Invoke();
             Debug.Log("Inventory loaded successfully.");
         }
     }

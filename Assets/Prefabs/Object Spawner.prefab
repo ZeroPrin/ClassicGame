@@ -49,12 +49,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1264af25990f764b85dc92acde1c22a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectToSpawn: {fileID: 0}
-  spawnPoint: {fileID: 8023410481338664713}
-  rayOriginPoint: {fileID: 5537578843554453304}
-  checkDistance: 5
-  spawnDelay: 1
-  rayColor: {r: 0, g: 1, b: 0, a: 1}
+  _objectToSpawn: {fileID: 0}
+  _spawnPoint: {fileID: 8023410481338664713}
+  _rayOriginPoint: {fileID: 5537578843554453304}
+  _checkDistance: 5
+  _spawnDelay: 1
 --- !u!33 &6570609223193321144
 MeshFilter:
   m_ObjectHideFlags: 0

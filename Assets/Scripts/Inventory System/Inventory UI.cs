@@ -13,7 +13,7 @@ public class InventoryUI : MonoBehaviour
 
     public void Initialize()
     {
-        inventory.onInventoryUpdated += UpdateInventoryPanel;
+        inventory.OnInventoryUpdated += UpdateInventoryPanel;
     }
 
     void UpdateInventoryPanel()

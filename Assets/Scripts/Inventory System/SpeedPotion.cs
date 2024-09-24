@@ -6,7 +6,7 @@ public class SpeedPotion : Item
 {
     public override void Use()
     {
-        Master.PlayerStats.ApplySpeedBoost(5, 5);
+        _playerStats.ApplySpeedBoost(5, 5);
         base.Use();
     }
 }

@@ -6,7 +6,7 @@ public class HummerOfStrength : Item
 {
     public override void Use()
     {
-        Master.PlayerStats.ApplyStrengthBoost(5, 5);
+        _playerStats.ApplyStrengthBoost(5, 5);
         base.Use();
     }
 }

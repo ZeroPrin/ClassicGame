@@ -1,11 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class Item : InteractiveObject, IInteractable, IItem
 {
     public PermanentRotation PermanentRotation;
     public InventoryObject InventoryObject;
+
+    protected PlayerStats _playerStats;
+
+    [Inject]
+    public void Construct(PlayerStats playerStats) 
+    {
+        _playerStats = playerStats;
+    }
+
     public override void GetInfo()
     {
         //Debug.Log("Item");

@@ -21,7 +21,7 @@ public class PlayerStatsUI : MonoBehaviour
 
     public void Initialize() 
     {
-        playerStats.onStatsChanged += SetStats;
+        playerStats.OnStatsChanged += SetStats;
     }
     public void SetStats() 
     {

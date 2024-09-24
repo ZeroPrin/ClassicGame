@@ -4,15 +4,6 @@ using UnityEngine;
 
 public class Master : MonoBehaviour
 {
-    public static Master instance;
-
-    public static PlayerController PlayerController => instance._playerController;
-    public static HandController HandController => instance._handController;
-    public static PlayerStats PlayerStats => instance._playerStats;
-    public static PlayerStatsUI PlayerStatsUI => instance._playerStatsUI;
-    public static Inventory Inventory => instance._inventory;
-    public static InventoryUI InventoryUI => instance._inventoryUI;
-
     [Header("Player")]
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private HandController _handController;
@@ -27,8 +18,6 @@ public class Master : MonoBehaviour
 
     public void Awake()
     {
-        instance = this;
-
         InitializeAll();
     }
 
@@ -37,19 +26,18 @@ public class Master : MonoBehaviour
         DeinitializeAll();
     }
 
-    public void InitializeAll() 
+    public void InitializeAll()
     {
-        PlayerController.Initialize();
-        InventoryUI.Initialize();
-        Inventory.Initialize();
-        PlayerStatsUI.Initialize();
-        PlayerStats.Initialize();
+        _playerController.Initialize();
+        _inventoryUI.Initialize();
+        _inventory.Initialize();
+        _playerStatsUI.Initialize();
+        _playerStats.Initialize();
     }
 
-    public void DeinitializeAll() 
+    public void DeinitializeAll()
     {
-        PlayerController.Deinitialize();
-        Inventory.Deinitialize();
-        
+        _playerController.Deinitialize();
+        _inventory.Deinitialize();
     }
 }

@@ -6,7 +6,7 @@ public class PoisonPotion : Item
 {
     public override void Use()
     {
-        Master.PlayerStats.ApplyPoison(5, 5);
+        _playerStats.ApplyPoison(5, 5);
         base.Use();
     }
 }

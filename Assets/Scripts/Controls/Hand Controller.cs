@@ -2,94 +2,95 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class HandController : MonoBehaviour
 {
     [Header ("Current Item")]
-    public GameObject currentObject;
-    public int currentIndex;
+    public GameObject _currentObject;
+    public int _currentIndex;
 
     [Header ("Main Components")]
-    [SerializeField] 
-    Transform HandPoint;
-    [SerializeField]
-    Transform cameraTransform;
+    [SerializeField] Transform _handPoint;
+    [SerializeField] Transform _cameraTransform;
 
     [Header("Parameters")]
-    [SerializeField]
-    float dropForce = 5;
+    [SerializeField] float _dropForce = 5;
 
-    private Rigidbody currentRigidbody;
-    private GameObject lastPrefab;
-    private int lastIndex;
+    private Rigidbody _currentRigidbody;
+    private GameObject _lastPrefab;
+    private int _lastIndex;
 
     [Header ("Actions")]
-    public Action<int> onItemDeleted;
+    public Action<int> OnItemDeleted;
+
+    [Inject]
+    private DiContainer _container;
 
     public void SetObject(GameObject prefab, int ind) 
     {
-        lastPrefab = prefab;
-        lastIndex = ind;
+        _lastPrefab = prefab;
+        _lastIndex = ind;
 
-        if (currentObject != null)
+        if (_currentObject != null)
         {
-            Destroy(currentObject);
+            Destroy(_currentObject);
         }
-        currentIndex = ind;
-        currentObject = Instantiate(prefab, HandPoint.position, Quaternion.identity, HandPoint);
-        currentRigidbody = currentObject.GetComponent<Rigidbody>();
-        currentRigidbody.isKinematic = true;
+        _currentIndex = ind;
+        _currentObject = _container.InstantiatePrefab(prefab, _handPoint.position, Quaternion.identity, _handPoint);
+        _currentRigidbody = _currentObject.GetComponent<Rigidbody>();
+        _currentRigidbody.isKinematic = true;
     }
 
     public void ResetObject()
     {
-        if (currentObject != null)
+        if (_currentObject != null)
         {
-            Destroy(currentObject);
+            Destroy(_currentObject);
         }
 
-        currentIndex = lastIndex;
-        currentObject = Instantiate(lastPrefab, HandPoint.position, Quaternion.identity, HandPoint);
-        currentRigidbody = currentObject.GetComponent<Rigidbody>();
-        currentRigidbody.isKinematic = true;
+        _currentIndex = _lastIndex;
+        _currentObject = Instantiate(_lastPrefab, _handPoint.position, Quaternion.identity, _handPoint);
+        _currentRigidbody = _currentObject.GetComponent<Rigidbody>();
+        _currentRigidbody.isKinematic = true;
     }
 
     public void Use() 
     {
-        if (currentObject != null)
+        if (_currentObject != null)
         {
-            currentObject.GetComponent<Item>().Use();
+            _currentObject.GetComponent<Item>().Use();
 
             ResetObject();
 
-            onItemDeleted?.Invoke(currentIndex);
+            OnItemDeleted?.Invoke(_currentIndex);
         }
     }
 
     public void Drop() 
     {
-        if (currentObject != null)
+        if (_currentObject != null)
         {
-            currentObject.transform.parent = null;
-            currentRigidbody.isKinematic = false;
-            currentRigidbody.AddForce(cameraTransform.forward * dropForce, ForceMode.Impulse);
-            currentObject = null;
+            _currentObject.transform.parent = null;
+            _currentRigidbody.isKinematic = false;
+            _currentRigidbody.AddForce(_cameraTransform.forward * _dropForce, ForceMode.Impulse);
+            _currentObject = null;
 
             ResetObject();
 
-            onItemDeleted?.Invoke(currentIndex);
+            OnItemDeleted?.Invoke(_currentIndex);
         }
     }
 
     public void Clear() 
     {
-        if (currentObject != null)
+        if (_currentObject != null)
         {
-            Destroy(currentObject);
+            Destroy(_currentObject);
         }
 
-        currentObject = null;
-        currentRigidbody = null;
-        currentIndex = 0;
+        _currentObject = null;
+        _currentRigidbody = null;
+        _currentIndex = 0;
     }
 }

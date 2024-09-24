@@ -6,7 +6,7 @@ public class HealthPotion : Item
 {
     public override void Use()
     {
-        Master.PlayerStats.IncreaseHP(50);
+        _playerStats.IncreaseHP(50);
         base.Use();
     }
 }

@@ -2,14 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class PlayerStats : MonoBehaviour
 {
     [Header("Main Components")]
-    [SerializeField]
-    PlayerStatsUI playerStatsUI;
-    [SerializeField]
-    PlayerController playerController;
+    private PlayerStatsUI _playerStatsUI;
+    private PlayerController _playerController;
 
     [Header("Stats")]
     public int HP;
@@ -17,100 +16,107 @@ public class PlayerStats : MonoBehaviour
     public int Strength;
     public int Wisdom;
 
-    private float extendedSpeedBoostDuration;
-    private float extendedStrengthBoostDuration;
+    private float _extendedSpeedBoostDuration;
+    private float _extendedStrengthBoostDuration;
 
     [Header ("Actions")]
-    public Action onStatsChanged;
+    public Action OnStatsChanged;
 
     [Header("Coroutines")]
-    private Coroutine speedBoostCoroutine;
-    private Coroutine poisonCoroutine;
-    private Coroutine strengthBoostCoroutine;
+    private Coroutine _speedBoostCoroutine;
+    private Coroutine _poisonCoroutine;
+    private Coroutine _strengthBoostCoroutine;
+
+    [Inject]
+    public void Consntruct(PlayerStatsUI playerStatsUI, PlayerController playerController) 
+    {
+        _playerStatsUI = playerStatsUI;
+        _playerController = playerController;
+    }
 
     public void Initialize()
     {
         HP = 100;
-        Speed = (int)playerController.moveSpeed;
-        Strength = (int)playerController.jumpForce;
+        Speed = (int)_playerController.MoveSpeed;
+        Strength = (int)_playerController.JumpForce;
         Wisdom = 0;
 
-        extendedStrengthBoostDuration = 0;
-        extendedSpeedBoostDuration = 0;
+        _extendedStrengthBoostDuration = 0;
+        _extendedSpeedBoostDuration = 0;
 
-        onStatsChanged?.Invoke();
+        OnStatsChanged?.Invoke();
     }
 
     #region Speed Effect
     public void ApplySpeedBoost(int amount, float duration)
     {
-        if (speedBoostCoroutine != null)
+        if (_speedBoostCoroutine != null)
         {
-            extendedSpeedBoostDuration += duration;
+            _extendedSpeedBoostDuration += duration;
         }
         else
         {
-            extendedSpeedBoostDuration = duration;
-            speedBoostCoroutine = StartCoroutine(SpeedBoostCoroutine(amount));
+            _extendedSpeedBoostDuration = duration;
+            _speedBoostCoroutine = StartCoroutine(SpeedBoostCoroutine(amount));
         }
     }
 
     private IEnumerator SpeedBoostCoroutine(int amount)
     {
         Speed += amount;
-        onStatsChanged?.Invoke();
+        OnStatsChanged?.Invoke();
 
-        while (extendedSpeedBoostDuration > 0)
+        while (_extendedSpeedBoostDuration > 0)
         {
             yield return new WaitForSeconds(1f);
-            extendedSpeedBoostDuration -= 1f;
+            _extendedSpeedBoostDuration -= 1f;
         }
 
         Speed -= amount;
-        onStatsChanged?.Invoke();
-        speedBoostCoroutine = null;
+        OnStatsChanged?.Invoke();
+        _speedBoostCoroutine = null;
     }
     #endregion
 
     #region Strength Effect
     public void ApplyStrengthBoost(int amount, float duration)
     {
-        if (strengthBoostCoroutine != null)
+        if (_strengthBoostCoroutine != null)
         {
-            extendedStrengthBoostDuration += duration;
+            _extendedStrengthBoostDuration += duration;
         }
         else
         {
-            extendedStrengthBoostDuration = duration;
-            strengthBoostCoroutine = StartCoroutine(StrengthBoostCoroutine(amount));
+            _extendedStrengthBoostDuration = duration;
+            _strengthBoostCoroutine = StartCoroutine(StrengthBoostCoroutine(amount));
         }
     }
 
     private IEnumerator StrengthBoostCoroutine(int amount)
     {
         Strength += amount;
-        onStatsChanged?.Invoke();
+        OnStatsChanged?.Invoke();
 
-        while (extendedStrengthBoostDuration > 0)
+        while (_extendedStrengthBoostDuration > 0)
         {
             yield return new WaitForSeconds(1f);
-            extendedStrengthBoostDuration -= 1f;
+            _extendedStrengthBoostDuration -= 1f;
         }
 
         Strength -= amount;
-        onStatsChanged?.Invoke();
-        strengthBoostCoroutine = null;
+        OnStatsChanged?.Invoke();
+        _strengthBoostCoroutine = null;
     }
     #endregion
 
     #region Poison Effect
     public void ApplyPoison(int damagePerSecond, float duration)
     {
-        if (poisonCoroutine != null)
+        if (_poisonCoroutine != null)
         {
-            StopCoroutine(poisonCoroutine);
+            StopCoroutine(_poisonCoroutine);
         }
-        poisonCoroutine = StartCoroutine(PoisonCoroutine(damagePerSecond, duration));
+        _poisonCoroutine = StartCoroutine(PoisonCoroutine(damagePerSecond, duration));
     }
 
     private IEnumerator PoisonCoroutine(int damagePerSecond, float duration)
@@ -123,7 +129,7 @@ public class PlayerStats : MonoBehaviour
             if (HP < 0)
                 HP = 0;
 
-            onStatsChanged?.Invoke();
+            OnStatsChanged?.Invoke();
             yield return new WaitForSeconds(1f);
             elapsedTime += 1f;
         }
@@ -134,7 +140,7 @@ public class PlayerStats : MonoBehaviour
     public void IncreaseWisdom(int amount)
     {
         Wisdom += amount;
-        onStatsChanged?.Invoke();
+        OnStatsChanged?.Invoke();
     }
     #endregion
 
@@ -146,7 +152,7 @@ public class PlayerStats : MonoBehaviour
         if (HP > 100)
             HP = 100;
 
-        onStatsChanged?.Invoke();
+        OnStatsChanged?.Invoke();
     }
     #endregion
 }
