@@ -2,13 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 public class PlayerStatsUI : MonoBehaviour
 {
-    [Header("Main Components")]
-    [SerializeField]
-    PlayerStats playerStats;
-
     [Header ("UI Elements")]
     [SerializeField]
     TextMeshProUGUI hp;
@@ -19,15 +16,23 @@ public class PlayerStatsUI : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI wisdom;
 
+    private PlayerStats _playerStats;
+
+    [Inject]
+    public void Construct(PlayerStats playerStats) 
+    {
+        _playerStats = playerStats;
+    }
+
     public void Initialize() 
     {
-        playerStats.OnStatsChanged += SetStats;
+        _playerStats.OnStatsChanged += SetStats;
     }
     public void SetStats() 
     {
-        hp.SetText($"{playerStats.HP}");
-        speed.SetText($"{playerStats.Speed}");
-        strength.SetText($"{playerStats.Strength}");
-        wisdom.SetText($"{playerStats.Wisdom}");
+        hp.SetText($"{_playerStats.HP}");
+        speed.SetText($"{_playerStats.Speed}");
+        strength.SetText($"{_playerStats.Strength}");
+        wisdom.SetText($"{_playerStats.Wisdom}");
     }
 }

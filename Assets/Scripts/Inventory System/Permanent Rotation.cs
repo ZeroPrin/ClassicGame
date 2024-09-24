@@ -5,15 +5,16 @@ using UnityEngine;
 
 public class PermanentRotation : MonoBehaviour
 {
-    public bool rotationActive;
+    public bool _rotationActive;
 
-    [SerializeField]
-    [Range(0.1f, 10)]
+    [SerializeField, Range(0.1f, 10)]
     float rotationSpeed;
 
     public void FixedUpdate()
     {
-        if (rotationActive)
+        if (_rotationActive)
+        {
             transform.Rotate(0, rotationSpeed, 0);
+        }
     }
 }

@@ -18,7 +18,7 @@ public class Item : InteractiveObject, IInteractable, IItem
 
     public override void GetInfo()
     {
-        //Debug.Log("Item");
+
     }
 
     public override void Interact()

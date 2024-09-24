@@ -1,33 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class InventoryUI : MonoBehaviour
 {
-    [SerializeField] Inventory inventory;
-    [SerializeField] RectTransform inventortyPanel;
+    [SerializeField] private RectTransform _inventortyPanel;
 
-    [SerializeField] GameObject itemUI;
+    [SerializeField] private GameObject _itemUI;
 
-    List<ItemUI> itemsUI = new List<ItemUI>();
+    private List<ItemUI> _itemsUI = new List<ItemUI>();
+
+    private Inventory _inventory;
+
+
+    [Inject]
+    public void Construct(Inventory inventory) 
+    {
+        _inventory = inventory;
+    }
 
     public void Initialize()
     {
-        inventory.OnInventoryUpdated += UpdateInventoryPanel;
+        _inventory.OnInventoryUpdated += UpdateInventoryPanel;
     }
 
     void UpdateInventoryPanel()
     {
         ClearInventoryPanel();
 
-        for (int i = 0; i < inventory.InventoryObjects.Length; i ++)
+        for (int i = 0; i < _inventory.InventoryObjects.Length; i ++)
         {
-            InventoryObject item = inventory.InventoryObjects[i];
-            int count = inventory.ObjectsCount[i];
+            InventoryObject item = _inventory.InventoryObjects[i];
+            int count = _inventory.ObjectsCount[i];
 
             if (item != null)
             {
-                GameObject newObject = Instantiate(itemUI, Vector3.zero, Quaternion.identity, inventortyPanel);
+                GameObject newObject = Instantiate(_itemUI, Vector3.zero, Quaternion.identity, _inventortyPanel);
 
                 ItemUI tmp_item = newObject.GetComponent<ItemUI>();
                 tmp_item.Name.SetText(item.Name);
@@ -36,7 +45,7 @@ public class InventoryUI : MonoBehaviour
                 tmp_item.Prefab = item.Prefab;
                 tmp_item.Index = i;
 
-                itemsUI.Add(tmp_item);
+                _itemsUI.Add(tmp_item);
 
                 //tmp_item.Initialize();
             }
@@ -45,11 +54,11 @@ public class InventoryUI : MonoBehaviour
 
     void ClearInventoryPanel() 
     {
-        foreach (ItemUI item in itemsUI) 
+        foreach (ItemUI item in _itemsUI) 
         {
             Destroy(item.gameObject);
         }
 
-        itemsUI.Clear();
+        _itemsUI.Clear();
     }
 }
