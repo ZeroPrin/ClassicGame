@@ -4,35 +4,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class Inventory : MonoBehaviour
+public class Inventory : IInitializable, IDisposable
 {
+    [Header("Injected Components")]
+    private HandController _handController;
+    private PlayerController _playerController;
+
+    [Header ("Other")]
     public InventoryObject[] InventoryObjects => _inventoryObjects;
     public int[] ObjectsCount => _objectsCount;
 
     [Header ("Inventory Capacity")]
-    [SerializeField] int _inventoryCapacity = 5;
-    [SerializeField] int _slotCapacity = 5;
+    int _inventoryCapacity = 5;
+    int _slotCapacity = 5;
 
     [Header("Inventory Data")]
-    [SerializeField] private InventoryData _savedInventoryData;
+    private InventoryData _savedInventoryData;
 
     private InventoryObject[] _inventoryObjects;
     private int[] _objectsCount;
     private InventoryObject _currentObject = null;
     private int _currentIndex = -1;
 
-    private HandController _handController;
-
     [Header ("Actions")]
     public Action OnInventoryUpdated;
 
     [Inject]
-    public void Construct(HandController handController) 
+    public void Construct(HandController handController, PlayerController playerController, InventoryData savedInventoryData) 
     {
         _handController = handController;
+        _playerController = playerController;
+        _savedInventoryData = savedInventoryData;
     }
-    public void Initialize()
+
+    void IInitializable.Initialize()
     {
+        _playerController.OnTocheInteractiveObject += AddItem;
+
         _inventoryObjects  = new InventoryObject[_inventoryCapacity];
         _objectsCount = new int[_inventoryCapacity];
 
@@ -49,19 +57,29 @@ public class Inventory : MonoBehaviour
         LoadInventory();
     }
 
-    public void Deinitialize() 
+    void IDisposable.Dispose() 
     {
         SaveInventory();
     }
 
     #region Add/Remove Item
-    public void AddItem(Item item)
+    public void AddItem(InteractiveObject interact)
     {
+        Debug.Log("AddItem");
+
+        Item item = interact.GetComponent<Item>();
+
+        if (item == null) 
+        {
+            Debug.Log(item);
+            return;
+        }
+
         InventoryObject inventoryObject = item.InventoryObject;
 
         if (AddToList(inventoryObject)) 
         {
-            Destroy(item.gameObject);
+            //Destroy(item.gameObject);
             OnInventoryUpdated?.Invoke();
         }
     }

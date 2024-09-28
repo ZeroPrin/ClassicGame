@@ -2,9 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Zenject;
 
-public class HandController : MonoBehaviour
+public class HandController : IInitializable
 {
     [Header ("Current Item")]
     public GameObject _currentObject;
@@ -24,8 +25,18 @@ public class HandController : MonoBehaviour
     [Header ("Actions")]
     public Action<int> OnItemDeleted;
 
+    [Inject] private DiContainer _container;
+
     [Inject]
-    private DiContainer _container;
+    public void Construct()
+    {
+
+    }
+
+    void IInitializable.Initialize() 
+    {
+
+    }
 
     public void SetObject(GameObject prefab, int ind) 
     {
@@ -34,7 +45,7 @@ public class HandController : MonoBehaviour
 
         if (_currentObject != null)
         {
-            Destroy(_currentObject);
+            //Destroy(_currentObject);
         }
         _currentIndex = ind;
         _currentObject = _container.InstantiatePrefab(prefab, _handPoint.position, Quaternion.identity, _handPoint);
@@ -46,11 +57,11 @@ public class HandController : MonoBehaviour
     {
         if (_currentObject != null)
         {
-            Destroy(_currentObject);
+            //Destroy(_currentObject);
         }
 
         _currentIndex = _lastIndex;
-        _currentObject = Instantiate(_lastPrefab, _handPoint.position, Quaternion.identity, _handPoint);
+        //_currentObject = Instantiate(_lastPrefab, _handPoint.position, Quaternion.identity, _handPoint);
         _currentRigidbody = _currentObject.GetComponent<Rigidbody>();
         _currentRigidbody.isKinematic = true;
     }
@@ -86,7 +97,7 @@ public class HandController : MonoBehaviour
     {
         if (_currentObject != null)
         {
-            Destroy(_currentObject);
+            //Destroy(_currentObject);
         }
 
         _currentObject = null;

@@ -13,14 +13,13 @@ public class InventoryUI : MonoBehaviour
 
     private Inventory _inventory;
 
-
     [Inject]
-    public void Construct(Inventory inventory) 
+    public void Construct(Inventory inventory)
     {
         _inventory = inventory;
     }
 
-    public void Initialize()
+    public void Awake()
     {
         _inventory.OnInventoryUpdated += UpdateInventoryPanel;
     }
@@ -46,8 +45,6 @@ public class InventoryUI : MonoBehaviour
                 tmp_item.Index = i;
 
                 _itemsUI.Add(tmp_item);
-
-                //tmp_item.Initialize();
             }
         }
     }

@@ -6,7 +6,7 @@ public class BookOfWisdom : Item
 {
     public override void Use()
     {
-        _playerStats.IncreaseWisdom(1);
+        //_playerStats.IncreaseWisdom(1);
         base.Use();
     }
 }
