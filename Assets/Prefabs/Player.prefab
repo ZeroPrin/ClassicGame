@@ -516,6 +516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea9aed05b01d9904e9554e7d21f52692, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rb: {fileID: 3034949891077764426}
+  _handTransform: {fileID: 8287812508249602821}
   _cameraTransform: {fileID: 7702010924328725444}
+  _rb: {fileID: 3034949891077764426}
   _rayOriginTransform: {fileID: 4220056821729017788}

@@ -40,6 +40,8 @@ public class Inventory : IInitializable, IDisposable
     void IInitializable.Initialize()
     {
         _playerController.OnTocheInteractiveObject += AddItem;
+        _playerController.OnSwitchNext += SwitchNext;
+        _playerController.OnSwitchPrevious += SwitchPrevious;
 
         _inventoryObjects  = new InventoryObject[_inventoryCapacity];
         _objectsCount = new int[_inventoryCapacity];
@@ -59,6 +61,10 @@ public class Inventory : IInitializable, IDisposable
 
     void IDisposable.Dispose() 
     {
+        _playerController.OnTocheInteractiveObject -= AddItem;
+        _playerController.OnSwitchNext -= SwitchNext;
+        _playerController.OnSwitchPrevious -= SwitchPrevious;
+
         SaveInventory();
     }
 

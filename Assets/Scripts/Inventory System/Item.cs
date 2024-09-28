@@ -8,14 +8,6 @@ public class Item : InteractiveObject, IInteractable, IItem
     public PermanentRotation PermanentRotation;
     public InventoryObject InventoryObject;
 
-    protected PlayerStats _playerStats;
-
-    [Inject]
-    public void Construct(PlayerStats playerStats) 
-    {
-        _playerStats = playerStats;
-    }
-
     public override void GetInfo()
     {
 
@@ -23,12 +15,13 @@ public class Item : InteractiveObject, IInteractable, IItem
 
     public override void Interact()
     {
-        Debug.Log("Interact");
+        Debug.Log("Item: Interact");
+        Destroy(gameObject);
     }
 
     public virtual void Use()
     {
-        Debug.Log("Used");
+        Debug.Log("Item: Used");
         Destroy(gameObject);
     }
 }

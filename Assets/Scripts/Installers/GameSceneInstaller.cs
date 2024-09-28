@@ -28,7 +28,7 @@ public class GameSceneInstaller : MonoInstaller
         //Player Input
         Container.Bind<PlayerInput>().AsSingle();
         Container.BindInterfacesAndSelfTo<PlayerController>().AsSingle();
-        Container.Bind<HandController>().AsSingle();
+        Container.BindInterfacesAndSelfTo<HandController>().AsSingle();
 
         //Player Stats
         Container.Bind<PlayerStatsUI>().FromComponentInHierarchy().AsSingle();

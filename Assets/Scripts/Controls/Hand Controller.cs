@@ -5,18 +5,18 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
 
-public class HandController : IInitializable
+public class HandController : IInitializable, IDisposable
 {
     [Header ("Current Item")]
     public GameObject _currentObject;
     public int _currentIndex;
 
     [Header ("Main Components")]
-    [SerializeField] Transform _handPoint;
-    [SerializeField] Transform _cameraTransform;
+    Transform _handPoint;
+    Transform _cameraTransform;
 
     [Header("Parameters")]
-    [SerializeField] float _dropForce = 5;
+    float _dropForce = 5;
 
     private Rigidbody _currentRigidbody;
     private GameObject _lastPrefab;
@@ -25,17 +25,28 @@ public class HandController : IInitializable
     [Header ("Actions")]
     public Action<int> OnItemDeleted;
 
+    private PlayerController _playerController;
+
     [Inject] private DiContainer _container;
 
     [Inject]
-    public void Construct()
+    public void Construct(PlayerController playerController, IPlayerComponentsProvider playerComponentsProvider)
     {
-
+        _playerController = playerController;
+        _handPoint = playerComponentsProvider.HandTransform;
+        _cameraTransform = playerComponentsProvider.CameraTransform;
     }
 
     void IInitializable.Initialize() 
     {
+        _playerController.OnUse += Use; 
+        _playerController.OnDrop += Drop;
+    }
 
+    void IDisposable.Dispose() 
+    {
+        _playerController.OnUse -= Use;
+        _playerController.OnDrop -= Drop;
     }
 
     public void SetObject(GameObject prefab, int ind) 
@@ -45,8 +56,9 @@ public class HandController : IInitializable
 
         if (_currentObject != null)
         {
-            //Destroy(_currentObject);
+            UnityEngine.Object.Destroy(_currentObject);
         }
+
         _currentIndex = ind;
         _currentObject = _container.InstantiatePrefab(prefab, _handPoint.position, Quaternion.identity, _handPoint);
         _currentRigidbody = _currentObject.GetComponent<Rigidbody>();
@@ -57,11 +69,11 @@ public class HandController : IInitializable
     {
         if (_currentObject != null)
         {
-            //Destroy(_currentObject);
+            UnityEngine.Object.Destroy(_currentObject);
         }
 
         _currentIndex = _lastIndex;
-        //_currentObject = Instantiate(_lastPrefab, _handPoint.position, Quaternion.identity, _handPoint);
+        _currentObject = _container.InstantiatePrefab(_lastPrefab, _handPoint.position, Quaternion.identity, _handPoint);
         _currentRigidbody = _currentObject.GetComponent<Rigidbody>();
         _currentRigidbody.isKinematic = true;
     }
@@ -97,7 +109,7 @@ public class HandController : IInitializable
     {
         if (_currentObject != null)
         {
-            //Destroy(_currentObject);
+            UnityEngine.Object.Destroy(_currentObject);
         }
 
         _currentObject = null;

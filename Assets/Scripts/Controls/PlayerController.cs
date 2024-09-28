@@ -8,7 +8,7 @@ public class PlayerController : IFixedTickable, IInitializable, IDisposable
     [Header("Injected Components")]
     private PlayerInput _playerInput;
     private IPlayerStatsProvider _playerStats;
-    private IMovable _movable;
+    private IPlayerComponentsProvider _playerComponentsProvider;
     private PlayerConfig _playerConfig;
 
     [Header("Main Components")]
@@ -47,10 +47,10 @@ public class PlayerController : IFixedTickable, IInitializable, IDisposable
     public Action OnSwitchPrevious;
 
     [Inject]
-    public void Construct(PlayerInput playerInput, IPlayerStatsProvider playerStats, IMovable movable, PlayerConfig playerConfig) 
+    public void Construct(PlayerInput playerInput, IPlayerStatsProvider playerStats, IPlayerComponentsProvider playerComponentsProvider, PlayerConfig playerConfig) 
     {
         _playerInput = playerInput;
-        _movable = movable;
+        _playerComponentsProvider = playerComponentsProvider;
         _playerStats = playerStats;
         _playerConfig = playerConfig;
     }
@@ -81,17 +81,17 @@ public class PlayerController : IFixedTickable, IInitializable, IDisposable
         _playerInput.Main.Previous.performed += context => SwitchPrevious();
     }
 
-    public void AddListenersComponents() 
+    private void AddListenersComponents() 
     {
         _playerStats.OnStatsChanged += OnPlayerStatsChanged;
     }
 
     private void InitializeComponents() 
     {
-        _transform = _movable.Transform;
-        _rb = _movable.RigidBody;
-        _cameraTransform = _movable.CameraTransform;
-        _rayOriginTransform = _movable.RayOriginTransform;
+        _transform = _playerComponentsProvider.Transform;
+        _rb = _playerComponentsProvider.RigidBody;
+        _cameraTransform = _playerComponentsProvider.CameraTransform;
+        _rayOriginTransform = _playerComponentsProvider.RayOriginTransform;
     }
 
     private void InitializeParameters()
@@ -125,7 +125,7 @@ public class PlayerController : IFixedTickable, IInitializable, IDisposable
         GetInfo();
     }
 
-    public void Move()
+    private void Move()
     {
         _movementInput = _playerInput.Main.Move.ReadValue<Vector2>();
 
@@ -138,7 +138,7 @@ public class PlayerController : IFixedTickable, IInitializable, IDisposable
         _rb.velocity = new Vector3(smoothedVelocity.x, verticalVelocity, smoothedVelocity.z);
     }
 
-    public void Rotate()
+    private void Rotate()
     {
         _rotateInput = _playerInput.Main.Rotate.ReadValue<Vector2>();
 
@@ -155,7 +155,7 @@ public class PlayerController : IFixedTickable, IInitializable, IDisposable
         _cameraTransform.localRotation = Quaternion.Euler(smoothedPitch, 0f, 0f);
     }
 
-    public void Jump()
+    private void Jump()
     {
         if (_jumpAvailable)
         {
@@ -174,7 +174,7 @@ public class PlayerController : IFixedTickable, IInitializable, IDisposable
         }
     }
 
-    public void Interact()
+    private void Interact()
     {
         Ray ray = new Ray(_cameraTransform.position, _cameraTransform.forward);
         RaycastHit hit;
@@ -185,12 +185,13 @@ public class PlayerController : IFixedTickable, IInitializable, IDisposable
             if (interactable != null)
             {
                 Debug.Log("Interact");
+                interactable.Interact();
                 OnTocheInteractiveObject?.Invoke(interactable);
             }
         }
     }
 
-    public void GetInfo()
+    private void GetInfo()
     {
         Ray ray = new Ray(_cameraTransform.position, _cameraTransform.forward);
         RaycastHit hit;
@@ -206,25 +207,25 @@ public class PlayerController : IFixedTickable, IInitializable, IDisposable
         }
     }
 
-    public void Use() 
+    private void Use() 
     {
         Debug.Log("Use");
         OnUse?.Invoke();
     }
 
-    public void Drop()
+    private void Drop()
     {
         Debug.Log("Drop");
         OnDrop?.Invoke();
     }
 
-    public void SwitchNext()
+    private void SwitchNext()
     {
         Debug.Log("SwitchNext");
         OnSwitchNext?.Invoke();
     }
 
-    public void SwitchPrevious()
+    private void SwitchPrevious()
     {
         Debug.Log("SwitchPrevious");
         OnSwitchPrevious?.Invoke();
